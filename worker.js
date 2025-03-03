@@ -1,13 +1,13 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // Step 1: Check if a new Worker should be created
     const regenerate = url.searchParams.get("regenerate");
 
     if (regenerate) {
       const workerName = `sentra-worker-${Date.now()}`;
-      
+
       // Step 2: Create a new Worker dynamically
       const createWorker = await fetch("https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/workers/scripts/" + workerName, {
         method: "PUT",
