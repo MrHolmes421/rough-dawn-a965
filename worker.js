@@ -27,6 +27,13 @@ export default {
       return await manageDomains();
     }
 
+    // 🌐 Serve AI Dashboard at dashboard.synx-ai.com
+    if (url.pathname === "/") {
+      return new Response(await getDashboardHTML(), {
+        headers: { "Content-Type": "text/html" },
+      });
+    }
+
     return new Response("404 Not Found", { status: 404 });
   }
 };
@@ -111,4 +118,39 @@ async function manageDomains() {
   }), {
     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
   });
+}
+
+// 🌐 AI Dashboard HTML (Served at dashboard.synx-ai.com)
+async function getDashboardHTML() {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Sentra AI Dashboard</title>
+      <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+      </style>
+    </head>
+    <body>
+      <h1>Synx AI Dashboard</h1>
+      <button onclick="getAIStats()">Get AI Stats</button>
+      <h2>AI Performance Metrics</h2>
+      <div id="results">Loading...</div>
+
+      <script>
+        async function getAIStats() {
+          let res = await fetch("/api/content");
+          let data = await res.json();
+          document.getElementById("results").innerHTML = 
+            "<b>Platform:</b> " + data.platform + "<br>" +
+            "<b>Content Topic:</b> " + data.content_topic + "<br>" +
+            "<b>Monetization:</b> " + data.monetization;
+        }
+      </script>
+    </body>
+    </html>
+  `;
 }
