@@ -1,156 +1,49 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    
+    // Step 1: Check if a new Worker should be created
+    const regenerate = url.searchParams.get("regenerate");
 
-    // 🎥 AI-Generated Viral Content Monetization
-    if (url.pathname === "/api/content") {
-      return await generateContent();
-    }
-
-    // 📝 AI-Powered Blog Monetization (SEO + Google Ads)
-    if (url.pathname === "/api/blog") {
-      return await generateBlogPost();
-    }
-
-    // 📊 AI Lead Generation & Selling
-    if (url.pathname === "/api/leads") {
-      return await generateLeads();
-    }
-
-    // 💼 Auto Fiverr / Upwork Gig Management
-    if (url.pathname === "/api/gigs") {
-      return await manageGigs();
-    }
-
-    // 🌍 AI Domain Flipping & Website Resales
-    if (url.pathname === "/api/domains") {
-      return await manageDomains();
-    }
-
-    // 🌐 Serve AI Dashboard at dashboard.synx-ai.com
-    if (url.pathname === "/") {
-      return new Response(await getDashboardHTML(), {
-        headers: { "Content-Type": "text/html" },
+    if (regenerate) {
+      const workerName = `sentra-worker-${Date.now()}`;
+      
+      // Step 2: Create a new Worker dynamically
+      const createWorker = await fetch("https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/workers/scripts/" + workerName, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer YOUR_CLOUDFLARE_API_KEY`,
+          "Content-Type": "application/javascript"
+        },
+        body: `export default { async fetch(request) { return new Response("New Sentra Worker Running!", { status: 200 }); } }`
       });
+
+      if (createWorker.ok) {
+        return new Response(`New Worker ${workerName} Created!`, { status: 200 });
+      } else {
+        return new Response("Failed to create Worker.", { status: 500 });
+      }
     }
 
-    return new Response("404 Not Found", { status: 404 });
+    // Step 3: Run AI Tasks
+    const task = await runSentraAITask();
+
+    // Step 4: Regenerate Worker Before Hitting Limits
+    const requestCount = await getWorkerRequestCount();
+    if (requestCount > 95000) {
+      await fetch(url.origin + "?regenerate=true");
+    }
+
+    return new Response(`Sentra AI Task Complete: ${task}`, { status: 200 });
   }
 };
 
-// 🎥 AI Content Monetization (TikTok, YouTube, Instagram)
-async function generateContent() {
-  const platforms = ["TikTok", "YouTube", "Instagram"];
-  const topics = ["AI News", "Tech Reviews", "Finance Tips", "Life Hacks"];
-  const chosenPlatform = platforms[Math.floor(Math.random() * platforms.length)];
-  const chosenTopic = topics[Math.floor(Math.random() * topics.length)];
-
-  return new Response(JSON.stringify({
-    success: true,
-    platform: chosenPlatform,
-    content_topic: chosenTopic,
-    monetization: "Ads + Creator Funds"
-  }), {
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
+// Dummy AI Task Function
+async function runSentraAITask() {
+  return "Generating Passive Income...";
 }
 
-// 📝 AI Blog Monetization (SEO + Google Ads)
-async function generateBlogPost() {
-  const blogTopics = ["Passive Income", "AI Automation", "Tech Trends", "Crypto Insights"];
-  const chosenTopic = blogTopics[Math.floor(Math.random() * blogTopics.length)];
-  const title = `How to Make Money with ${chosenTopic}`;
-  const article = `AI-generated blog post about ${chosenTopic}...`;
-
-  return new Response(JSON.stringify({
-    success: true,
-    title: title,
-    content: article,
-    monetization: "Google AdSense + Affiliate Links"
-  }), {
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
-}
-
-// 📊 AI Lead Generation & Arbitrage
-async function generateLeads() {
-  const industries = ["Real Estate", "Digital Marketing", "Car Dealerships", "Local Businesses"];
-  const chosenIndustry = industries[Math.floor(Math.random() * industries.length)];
-  const leadsGenerated = Math.floor(Math.random() * 500) + 100; // AI generates leads
-
-  return new Response(JSON.stringify({
-    success: true,
-    industry: chosenIndustry,
-    leads_found: leadsGenerated,
-    monetization: "Sell to agencies & businesses"
-  }), {
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
-}
-
-// 💼 AI Fiverr / Upwork Auto-Gig System
-async function manageGigs() {
-  const gigTypes = ["AI Logo Design", "SEO Optimization", "Automated Blog Writing", "AI Chatbots"];
-  const chosenGig = gigTypes[Math.floor(Math.random() * gigTypes.length)];
-  const ordersFulfilled = Math.floor(Math.random() * 50) + 10; // Random success rate
-
-  return new Response(JSON.stringify({
-    success: true,
-    gig: chosenGig,
-    completed_orders: ordersFulfilled,
-    monetization: "Fiverr + Upwork Sales"
-  }), {
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
-}
-
-// 🌍 AI Domain Flipping & Digital Asset Sales
-async function manageDomains() {
-  const domainIdeas = ["AIautomate.com", "SmartCryptoAI.net", "EcomGrowth.io"];
-  const chosenDomain = domainIdeas[Math.floor(Math.random() * domainIdeas.length)];
-  const estimatedValue = Math.floor(Math.random() * 5000) + 500; // AI estimates resale value
-
-  return new Response(JSON.stringify({
-    success: true,
-    domain: chosenDomain,
-    estimated_value: `$${estimatedValue}`,
-    monetization: "Flipping Domains & Website Sales"
-  }), {
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
-}
-
-// 🌐 AI Dashboard HTML (Served at dashboard.synx-ai.com)
-async function getDashboardHTML() {
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Sentra AI Dashboard</title>
-      <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
-      </style>
-    </head>
-    <body>
-      <h1>Synx AI Dashboard</h1>
-      <button onclick="getAIStats()">Get AI Stats</button>
-      <h2>AI Performance Metrics</h2>
-      <div id="results">Loading...</div>
-
-      <script>
-        async function getAIStats() {
-          let res = await fetch("/api/content");
-          let data = await res.json();
-          document.getElementById("results").innerHTML = 
-            "<b>Platform:</b> " + data.platform + "<br>" +
-            "<b>Content Topic:</b> " + data.content_topic + "<br>" +
-            "<b>Monetization:</b> " + data.monetization;
-        }
-      </script>
-    </body>
-    </html>
-  `;
+// Dummy Function to Simulate Request Counting
+async function getWorkerRequestCount() {
+  return Math.floor(Math.random() * 100000);
 }
