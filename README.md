@@ -1,3 +1,6 @@
+git add .
+git commit -m "Initial dashboard deployment"
+git push origin main
 import { useState } from "react";
 
 function App() {
