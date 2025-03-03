@@ -1,0 +1,9 @@
+name = "synxai420"
+type = "javascript"
+account_id = "31ecbbe3dc6d89e75c5d7bc387393ea0"
+workers_dev = true
+
+`--compatibility-date 2025-03-03`
+
+[vars]
+CLOUDFLARE_API_TOKEN = "mqr1I41zdySez0lGGLzKwDuT-382uJcyyD3kVxoo"
