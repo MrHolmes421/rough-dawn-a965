@@ -6,4 +6,4 @@ workers_dev = true
 `--compatibility-date 2025-03-03`
 
 [vars]
-CLOUDFLARE_API_TOKEN = "mqr1I41zdySez0lGGLzKwDuT-382uJcyyD3kVxoo"
+API_TOKEN = "mqr1I41zdySez0lGGLzKwDuT-382uJcyyD3kVxoo"
