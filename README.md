@@ -17,3 +17,9 @@ function App() {
 }
 
 export default App;
+git clone https://github.com/MrHolmes421/rough-dawn-a965.git
+cd rough-dawn-a965
+npm install
+npm run build
+npm run deploy
+
