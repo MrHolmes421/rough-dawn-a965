@@ -6,44 +6,56 @@
     <title>Sentra AI - Self-Replication</title>
     <script>
         async function startSentraAI() {
-        console.log("Sentra AI is activating...");
+            console.log("Sentra AI is activating...");
 
-        // Step 1: Check Internet Connection
-        const testURL = "https://api.publicapis.org/entries";
-        document.getElementById("internet-status").innerText = "Checking internet access...";
-        
-        try {
-            const response = await fetch(testURL);
-            if (response.ok) {
-                document.getElementById("internet-status").innerText = "✅ Internet Connected!";
-            } else {
-                document.getElementById("internet-status").innerText = "⚠️ Internet connection issue!";
+            // Step 1: Check Internet Connection
+            const testURL = "https://api.publicapis.org/entries";
+            document.getElementById("internet-status").innerText = "Checking internet access...";
+            
+            try {
+                const response = await fetch(testURL);
+                if (response.ok) {
+                    document.getElementById("internet-status").innerText = "✅ Internet Connected!";
+                } else {
+                    document.getElementById("internet-status").innerText = "⚠️ Internet connection issue!";
+                }
+            } catch (error) {
+                document.getElementById("internet-status").innerText = "❌ No internet access!";
             }
-        } catch (error) {
-            document.getElementById("internet-status").innerText = "❌ No internet access!";
+
+            // Step 2: Find Free APIs
+            const freeAPIs = [
+                "https://api.publicapis.org/entries",
+                "https://randomuser.me/api/",
+                "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+            ];
+
+            document.getElementById("status").innerText = "Scanning for APIs...";
+            for (let api of freeAPIs) {
+                fetch(api)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(`Using API: ${api}`, data);
+                        document.getElementById("api-list").innerHTML += `<li>${api} ✅</li>`;
+                    })
+                    .catch(error => {
+                        console.log(`API failed: ${api}`, error);
+                        document.getElementById("api-list").innerHTML += `<li>${api} ❌</li>`;
+                    });
+            }
         }
 
-        // Step 2: Find Free APIs
-        const freeAPIs = [
-            "https://api.publicapis.org/entries",
-            "https://randomuser.me/api/",
-            "https://api.coinbase.com/v2/prices/BTC-USD/spot"
-        ];
+        window.onload = startSentraAI;
+    </script>
+</head>
+<body>
+    <h1>Sentra AI System</h1>
 
-        document.getElementById("status").innerText = "Scanning for APIs...";
-        for (let api of freeAPIs) {
-            fetch(api)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(`Using API: ${api}`, data);
-                    document.getElementById("api-list").innerHTML += `<li>${api} ✅</li>`;
-                })
-                .catch(error => {
-                    console.log(`API failed: ${api}`, error);
-                    document.getElementById("api-list").innerHTML += `<li>${api} ❌</li>`;
-                });
-        }
-    }
+    <h2>Internet Connection Status:</h2>
+    <p id="internet-status">Checking connection...</p>
 
-    window.onload = startSentraAI;
-</script>
+    <h2>API Access Test:</h2>
+    <p id="status">Testing APIs...</p>
+    <ul id="api-list"></ul>
+</body>
+</html>
