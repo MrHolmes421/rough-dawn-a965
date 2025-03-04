@@ -3,20 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synx AI Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sentra AI - Self-Replication</title>
+    <script>
+        async function startSentraAI() {
+            console.log("Sentra AI is activating...");
+            
+            // Step 1: Identify APIs for Growth
+            const freeAPIs = [
+                "https://api.publicapis.org/entries",
+                "https://randomuser.me/api/",
+                "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+            ];
+            
+            for (let api of freeAPIs) {
+                fetch(api)
+                    .then(response => response.json())
+                    .then(data => console.log(`Using API: ${api}`, data))
+                    .catch(error => console.log(`API failed: ${api}`, error));
+            }
+
+            // Step 2: Generate Revenue Sources
+            const revenueModels = ["Affiliate Marketing", "Dropshipping", "Crypto Trading", "Ad Arbitrage"];
+            document.getElementById("status").innerText = "Scanning for revenue streams...";
+            setTimeout(() => {
+                document.getElementById("status").innerText = `Identified: ${revenueModels.join(", ")}`;
+                console.log("Sentra AI has identified revenue sources.");
+            }, 2000);
+
+            // Step 3: Self-Replication
+            document.getElementById("replication").innerText = "Searching for expansion opportunities...";
+            setTimeout(() => {
+                document.getElementById("replication").innerText = "Sentra AI is creating additional entities...";
+                console.log("Sentra AI is self-replicating...");
+            }, 4000);
+        }
+
+        window.onload = startSentraAI;
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Synx AI Dashboard</h1>
-        <button id="fetchData">Get AI Stats</button>
-    </header>
-    <main>
-        <div id="stats">
-            <h2>AI Performance Metrics</h2>
-            <p id="aiData">Loading...</p>
-        </div>
-    </main>
-    <script src="script.js"></script>
+    <h1>Sentra AI System</h1>
+    <p id="status">Initializing AI...</p>
+    <p id="replication">Waiting for self-replication...</p>
 </body>
 </html>
