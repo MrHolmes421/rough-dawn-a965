@@ -1,86 +1,53 @@
 export default {
   async fetch(request) {
     const url = new URL(request.url);
-    const path = url.pathname;
 
-    if (path === "/") {
-      return new Response(await generateDashboard(), {
-        headers: { "Content-Type": "text/html" },
-      });
-    } else if (path === "/run-ai") {
-      return new Response(await executeAI(), {
-        headers: { "Content-Type": "application/json" },
+    if (url.pathname === "/api/run-tasks") {
+      return new Response(JSON.stringify({
+        message: "AI successfully activated!",
+        status: "success"
+      }), {
+        headers: { "Content-Type": "application/json" }
       });
     }
 
-    return new Response("404 Not Found", { status: 404 });
-  },
-};
-
-async function generateDashboard() {
-  return `
-    <html>
+    return new Response(`
+      <!DOCTYPE html>
+      <html lang="en">
       <head>
-        <title>Sentra AI Dashboard</title>
-        <script>
-          async function runAI() {
-            const response = await fetch("/run-ai");
-            const data = await response.json();
-            document.getElementById("status").innerText = data.message;
-          }
-        </script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Sentra AI Dashboard</title>
+          <style>
+              body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+              h1 { color: #333; }
+              button { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+              #output { margin-top: 20px; font-size: 18px; color: green; }
+          </style>
       </head>
       <body>
-        <h1>Sentra AI Dashboard</h1>
-        <button onclick="runAI()">Activate Sentra AI</button>
-        <p id="status">Waiting for AI execution...</p>
+          <h1>Sentra AI Dashboard</h1>
+          <p>Monitor and control your AI operations in real-time.</p>
+          <button onclick="activateAI()">Activate Sentra AI</button>
+          <p id="output">Waiting for AI...</p>
+
+          <script>
+              async function activateAI() {
+                  document.getElementById('output').innerText = "Activating AI...";
+                  try {
+                      let response = await fetch('/api/run-tasks');
+                      let data = await response.json();
+                      document.getElementById('output').innerText = data.message;
+                  } catch (error) {
+                      document.getElementById('output').innerText = "Error activating AI. Check console.";
+                      console.error("Error:", error);
+                  }
+              }
+          </script>
       </body>
-    </html>
-  `;
-}
-
-async function executeAI() {
-  // 🚀 AI Social Media Bot Execution
-  await socialMediaAutomation();
-  
-  // 🚀 AI Revenue Execution
-  await generateRevenue();
-  
-  // 🚀 AI Self-Regeneration Execution
-  await selfReplicate();
-
-  return { message: "Sentra AI is now running and expanding automatically!" };
-}
-
-// 🟢 Step 1: Social Media Automation
-async function socialMediaAutomation() {
-  const platforms = ["Facebook", "Instagram", "TikTok", "Twitter", "YouTube"];
-  
-  for (const platform of platforms) {
-    console.log(`🚀 AI Engaging on ${platform}...`);
-    // Simulate AI engagement
-    await wait(2000);
+      </html>
+    `, {
+      headers: { "Content-Type": "text/html" }
+    });
   }
-}
-
-// 🟢 Step 2: Revenue Generation
-async function generateRevenue() {
-  const incomeStreams = ["Affiliate Marketing", "Lead Generation", "Digital Products", "Dropshipping"];
-
-  for (const stream of incomeStreams) {
-    console.log(`💰 Activating AI Revenue Stream: ${stream}...`);
-    // Simulate revenue automation
-    await wait(2000);
-  }
-}
-
-// 🟢 Step 3: AI Self-Replication
-async function selfReplicate() {
-  console.log("♻️ AI is self-replicating...");
-  await wait(3000);
-}
-
-// Utility function to simulate wait time
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+};
