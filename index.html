@@ -3,59 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentra AI - Self-Replication</title>
+    <title>Sentra AI Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            font-size: 18px;
+            margin-top: 20px;
+            color: green;
+        }
+    </style>
     <script>
-        async function startSentraAI() {
-            console.log("Sentra AI is activating...");
-
-            // Step 1: Check Internet Connection
-            const testURL = "https://www.google.com";
-            document.getElementById("internet-status").innerText = "Checking internet access...";
-            
+        async function activateAI() {
+            document.getElementById("status").innerText = "AI is initializing...";
             try {
-                const response = await fetch(testURL);
-                if (response.ok) {
-                    document.getElementById("internet-status").innerText = "✅ Internet Connected!";
-                } else {
-                    document.getElementById("internet-status").innerText = "⚠️ Internet connection issue!";
-                }
+                const response = await fetch("/run-ai");
+                const data = await response.json();
+                document.getElementById("status").innerText = data.message;
             } catch (error) {
-                document.getElementById("internet-status").innerText = "❌ No internet access!";
-            }
-
-            // Step 2: Find Free APIs
-            const freeAPIs = [
-                "https://api.publicapis.org/entries",
-                "https://randomuser.me/api/",
-                "https://api.coinbase.com/v2/prices/BTC-USD/spot"
-            ];
-
-            document.getElementById("status").innerText = "Scanning for APIs...";
-            for (let api of freeAPIs) {
-                fetch(api)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(`Using API: ${api}`, data);
-                        document.getElementById("api-list").innerHTML += `<li>${api} ✅</li>`;
-                    })
-                    .catch(error => {
-                        console.log(`API failed: ${api}`, error);
-                        document.getElementById("api-list").innerHTML += `<li>${api} ❌</li>`;
-                    });
+                document.getElementById("status").innerText = "Error activating AI. Check console.";
+                console.error(error);
             }
         }
-
-        window.onload = startSentraAI;
     </script>
 </head>
 <body>
-    <h1>Sentra AI System</h1>
-
-    <h2>Internet Connection Status:</h2>
-    <p id="internet-status">Checking connection...</p>
-
-    <h2>API Access Test:</h2>
-    <p id="status">Testing APIs...</p>
-    <ul id="api-list"></ul>
+    <h1>Sentra AI Dashboard</h1>
+    <p>Monitor and control your AI operations in real-time.</p>
+    
+    <button onclick="activateAI()">Activate Sentra AI</button>
+    
+    <p id="status">Waiting for AI execution...</p>
 </body>
 </html>
